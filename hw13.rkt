@@ -28,7 +28,7 @@
   (lm (pred lst)
     (iffy
       (~= lst mt)
-      (> 1 0)
+      'TRUE!
       (∧ (pred (1st lst))
          (all? pred (rst lst))))))
 
@@ -37,7 +37,7 @@
   (lm (pred lst)
     (iffy
       (~= lst mt)
-      (> 0 1)
+      'FALSE!
       (∨ (pred (1st lst))
          (any? pred (rst lst))))))
 
@@ -51,10 +51,10 @@
   (lm (lst)
     (iffy
       (~= lst mt)
-      (> 0 1)
+      'FALSE!
       (iffy
         (~= (rst lst) mt)
-        (> 0 1)
+        'FALSE!
         (∨ (has? (1st lst) (rst lst))
            (has-dup? (rst lst)))))))
 
@@ -79,12 +79,12 @@
   (lm (qs)
     (iffy
       (~= qs mt)
-      (> 1 0)
+      'TRUE!
       (iffy
         (~= (rst qs) mt)
-        (> 1 0)
+        'TRUE!
         (∧ (safe-to-add? (1st qs) (rst qs))
-           (all-safe? (rst qs)))))))
+           (all-safe?    (rst qs)))))))
 
 ;; nqueens : Int -> ListofQ or 'FALSE!
 (bind/rec nqueens
