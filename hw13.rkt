@@ -153,7 +153,20 @@
 (chknot (all-safe? (li (Q 1 5) (Q 1 6) (Q 2 3)))) ;; row conflict
 
 
-;; nqueens : Int -> ListofQ or 'FALSE!
+;; reverse : List -> List
+;; Reverses a list using an accumulator helper.
+(bind/rec reverse
+  (lm (lst)
+    (bind/rec [rev-acc
+               (lm (remaining acc)
+                 (iffy (~= remaining mt)
+                       acc
+                       (rev-acc (rst remaining)
+                                (cns (1st remaining) acc))))]
+      (rev-acc lst mt))))
+
+
+;; nqueens : Int -> ListofQ or 0
 (bind/rec nqueens
   (lm (n)
     (bind/rec [helper
@@ -175,7 +188,10 @@
                                                           (try-col (+ col 1))))
                                                   (try-col (+ col 1))))))]
                             (try-col 1))))]
-      (helper 1 mt))))
+      (bind [raw (helper 1 mt)]
+        (iffy raw
+              raw
+              (reverse raw))))))
 
 ;; Testing nqueens
 ;; n = 0
