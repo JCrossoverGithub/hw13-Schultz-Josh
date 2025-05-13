@@ -25,7 +25,7 @@
 (bind/rec all?
   (lm (pred lst)
     (iffy (~= lst mt)
-          'TRUE!
+          (> 1 0)
           (∧ (pred (1st lst))
              (all? pred (rst lst))))))
 
@@ -33,7 +33,7 @@
 (bind/rec any?
   (lm (pred lst)
     (iffy (~= lst mt)
-          'FALSE!
+          (> 0 1)
           (∨ (pred (1st lst))
              (any? pred (rst lst))))))
 
@@ -47,9 +47,9 @@
 (bind/rec has-dup?
   (lm (lst)
     (iffy (~= lst mt)
-          'FALSE!
+          (> 0 1)
           (iffy (~= (rst lst) mt)
-                'FALSE!
+                (> 0 1)
                 (∨ (has? (1st lst) (rst lst))
                    (has-dup? (rst lst)))))))
 
@@ -79,11 +79,11 @@
 (bind/rec all-safe?
   (lm (qs)
     (iffy (~= qs mt)
-          'TRUE!
+          (> 1 0)
           (iffy (~= (rst qs) mt)
-                'TRUE!
+                (> 1 0)
                 (∧ (safe-to-add? (1st qs) (rst qs))
-                   (all-safe? (rst qs)))))))
+                   (all-safe?    (rst qs)))))))
 
 ;; length
 
@@ -98,24 +98,24 @@
 ;; nqueens : Int -> ListofQ or 'FALSE!
 (bind/rec nqueens
   (lm (n)
-    (bind/rec ([helper
+    (bind/rec [helper
                 (lm (row acc)
                   (iffy (> row n)
                         acc
-                        (bind/rec ([try-col
-                                     (lm (col)
-                                       (iffy (> col n)
-                                             'FALSE!
-                                             (bind ([cand (Q row col)])
-                                               (bind ([res (helper
-                                                             (+ row 1)
-                                                             (cns cand acc))])
-                                                 (iffy (~= res 'FALSE!)
-                                                       res
-                                                       (try-col (+ col 1)))))))])
-                            (try-col 1))))]  
-      (helper 1 mt)))))
-
+                        (bind/rec [try-col
+                                    (lm (col)
+                                      (iffy (> col n)
+                                            (> 0 1)
+                                            (bind [cand (Q row col)])
+                                              (bind [res
+                                                      (helper
+                                                        (+ row 1)
+                                                        (cns cand acc))])
+                                                (iffy (~= res (> 0 1))
+                                                      res
+                                                      (try-col (+ col 1)))))])
+                            (try-col 1)))]
+      (helper 1 mt))))
 
 ;; valid-solution? : Int ListofQ -> Bool
 (bind/rec valid-solution?
