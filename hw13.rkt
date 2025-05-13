@@ -94,18 +94,16 @@
                                           (> 0 1)
                                           (bind [cand (Q row col)]
                                             (iffy (safe-to-add? cand acc)
-                                                  ;; only recurse if safe
-                                                  (bind [sol (helper
-                                                              (+ row 1)
-                                                              (cns cand acc))]
-                                                    (iffy (~= sol (> 0 1))
+                                                  (bind [sol
+                                                         (helper
+                                                           (+ row 1)
+                                                           (cns cand acc))]
+                                                    (iffy sol
                                                           sol
                                                           (try-col (+ col 1))))
-                                                  ;; else skip to next column
                                                   (try-col (+ col 1))))))]
-                            (try-col 1))))]  
+                            (try-col 1))))]
       (helper 1 mt))))
-
 
 ;; valid-solution? : Integer ListofQueen -> Boolean
 (bind/rec valid-solution?
