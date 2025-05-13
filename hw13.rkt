@@ -84,26 +84,24 @@
 ;; nqueens : Int -> ListofQ or 'FALSE!
 (bind/rec nqueens
   (lm (n)
-    (bind/rec [helper
-               (lm (row acc)
-                 (iffy (> row n)
-                       acc
-                       (bind/rec [try-col
-                                  (lm (col)
-                                    (iffy (> col n)
-                                          (> 0 1)
-                                          (bind [cand (Q row col)]
-                                            (iffy (safe-to-add? cand acc)
-                                                  (bind [sol
-                                                         (helper
-                                                           (+ row 1)
-                                                           (cns cand acc))]
-                                                    (iffy sol
-                                                          sol
-                                                          (try-col (+ col 1))))
-                                                  (try-col (+ col 1))))))]
-                            (try-col 1))))]
-      (helper 1 mt))))
+    (bind/rec [search
+               (lm (row col acc)
+                 (cond
+                   [(> row n) acc]
+                   [(> col n) 
+                    (> 0 1)]
+                   [else
+                    (let ([cand (Q row col)])
+                      (if (safe-to-add? cand acc)
+                          ;; if safe, recurse to next row
+                          (let ([sol (search (+ row 1) 1 (cns cand acc))])
+                            (if sol
+                                sol  ;; full board
+                                (search row (+ col 1) acc))) 
+                          ;; if not safe, advance to next column
+                          (search row (+ col 1) acc)))]
+
+      (search 1 1 mt)))])))
 
 ;; valid-solution? : Integer ListofQueen -> Boolean
 (bind/rec valid-solution?
