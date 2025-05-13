@@ -86,17 +86,17 @@
   (lm (n)
     (bind/rec [search
       (lm (row col acc)
-        (cond
-          [(> row n) acc]
-          [(> col n) 'FALSE!]
-          [else
-           (bind [cand (Q row col)]
-             (iffy (safe-to-add? cand acc)
-                   (bind [sol (search (+ row 1) 1 (cns cand acc))]
-                     (iffy sol
-                           sol
-                           (search row (+ col 1) acc)))
-                   (search row (+ col 1) acc)))]))]
+        (iffy (> row n)
+              acc
+              (iffy (> col n)
+                    'FALSE!
+                    (bind [cand (Q row col)]
+                      (iffy (safe-to-add? cand acc)
+                            (bind [sol (search (+ row 1) 1 (cns cand acc))]
+                              (iffy sol
+                                    sol
+                                    (search row (+ col 1) acc)))
+                            (search row (+ col 1) acc))))))]
 
       (search 1 1 mt))))
 
