@@ -179,19 +179,17 @@
                                           (> 0 1)
                                           (bind [cand (Q row col)]
                                             (iffy (safe-to-add? cand acc)
-                                                  (bind [sol
-                                                         (helper
-                                                           (+ row 1)
-                                                           (cns cand acc))]
+                                                  (bind [sol (helper (+ row 1)
+                                                                     (cns cand acc))]
                                                     (iffy sol
                                                           sol
                                                           (try-col (+ col 1))))
                                                   (try-col (+ col 1))))))]
-                            (try-col 1))))]
+                          (try-col 1))))]
       (bind [raw (helper 1 mt)]
         (iffy raw
-              raw
-              (reverse raw))))))
+              (reverse raw)
+              raw)))))
 
 ;; Testing nqueens
 ;; n = 0
