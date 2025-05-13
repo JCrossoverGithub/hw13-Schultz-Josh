@@ -1,17 +1,45 @@
 #lang 450lang
 
 
+;; A list whose first element is the symbol 'Q and whose
+;; second and third elements are integers >= 1.
+;; Interp: Represents a chess queen at row qx and column qy on an n x n board.
+;; queen? : Any -> Boolean
+(bind/rec queen?
+  (lm (x)
+    (∧ (list? x)
+       (symbol=? (1st x) 'Q)
+       (integer? (2nd x))
+       (integer? (1st (rst (rst x)))))))
+
+
+;; A ListofQueen is either:
+;; - mt
+;; - (cns Queen ListofQueen)
+;; Interp: Represents a collection of Queen values.
+;; ListofQueen? : Any -> Boolean
+(bind/rec listofqueen?
+  (lm (xs)
+    (∧ (list? xs)
+       (or (~= xs mt)
+           (∧ (queen?  (1st xs))
+              (listofqueen? (rst xs)))))))
+
+
 ;; Q : Integer Integer -> Queen
+;; Produces a Queen at row r and column c.
 (bind/rec Q
   (lm (r c)
     (li 'Q r c)))
 
 ;; qx : Queen -> Integer
+;; Extracts the row index of a Queen.
 (bind/rec qx
   (lm (q)
     (2nd q)))
 
 ;; qy : Queen -> Integer
+;; Extracts the column index of a Queen.
 (bind/rec qy
   (lm (q)
     (1st (rst (rst q)))))
@@ -30,6 +58,7 @@
 (chk= (length (li mt mt mt))                 3)   ;; list of lists
 
 ;; all? : (Any->Boolean) List -> Boolean
+;; Returns true if pred holds for all elements in the list.
 (bind/rec all?
   (lm (pred lst)
     (iffy (~= lst mt)
@@ -45,6 +74,7 @@
 (chknot (all? (lm (x) (> x 5)) (li 1 6 10)))  ;; element 1 fails
 
 ;; any? : (Any->Boolean) List -> Boolean
+;; Returns true if any (one) pred holds in the list.
 (bind/rec any?
   (lm (pred lst)
     (iffy (~= lst mt)
@@ -62,6 +92,7 @@
 (chknot (any? (lm (x) (< x 0)) (li 1 2 3)))
 
 ;; has? : Any List -> Boolean
+;; Returns true if v appears in lst.
 (bind/rec has?
   (lm (v lst)
     (any? (lm (x) (~= x v))
@@ -74,6 +105,7 @@
 (chk    (has? "1" (li 1 "1" '1)))
 
 ;; has-dup? : List -> Boolean
+;; Returns true if the list contains any duplicate elements.
 (bind/rec has-dup?
   (lm (lst)
     (iffy (~= lst mt)
@@ -91,6 +123,7 @@
 
 
 ;; safe? : Queen Queen -> Boolean
+;; Returns true if queens q1 and q2 do not threaten eachother.
 (bind/rec safe?
   (lm (q1 q2)
     (¬
@@ -114,6 +147,7 @@
 (chk    (safe? (Q 3 2) (Q 5 5)))
 
 ;; safe-to-add? : Queen ListofQueen -> Boolean
+;; Returns true if a candidate queen can be added without conflict.
 (bind/rec safe-to-add?
   (lm (q qs)
     (all? (lm (o) (safe? q o))
@@ -130,6 +164,7 @@
 (chknot (safe-to-add? (Q 5 5) (li (Q 3 3) (Q 2 7))))
 
 ;; all-safe? : ListofQueen -> Boolean
+;; Returns true when no two queens in the list threaten each other.
 (bind/rec all-safe?
   (lm (qs)
     (iffy (~= qs mt)
@@ -159,7 +194,8 @@
       (rev-acc lst mt))))
 
 
-;; nqueens : Int -> ListofQ or 0
+;; nqueens : Integer -> ListofQueen or false
+;; Returns a valid n-queens placement or false.
 (bind/rec nqueens
   (lm (n)
     (bind/rec [helper
@@ -196,6 +232,7 @@
 (chk= (length (nqueens 4)) 4)
 
 ;; valid-solution? : Integer ListofQueen -> Boolean
+;; Returns true when qs is a valid solution.
 (bind/rec valid-solution?
   (lm (n qs)
     (∧ (~= (length qs) n)
