@@ -3,19 +3,20 @@
 
 ;; Q‐Constructor and Accessors
 
-;; Q : Integer Integer -> ListofInteger
-;; Builds a 2-element list [row col].
+;; Q : Integer Integer -> Queen
 (bind/rec Q
   (lm (r c)
-    (cns r (cns c mt))))
+    (li 'Q r c)))
 
-;; qx : ListofInteger -> Integer
+;; qx : Queen -> Integer
 (bind/rec qx
-  (lm (q) (1st q)))
+  (lm (q)
+    (2nd q)))
 
-;; qy : ListofInteger -> Integer
+;; qy : Queen -> Integer
 (bind/rec qy
-  (lm (q) (2nd q)))
+  (lm (q)
+    (1st (rst (rst q)))))
 
 
 ;; List Helpers
@@ -122,5 +123,3 @@
     (∧ (= (length qs) n)
        (¬ (has-dup? qs))
        (all-safe? qs))))
-
-
