@@ -19,7 +19,7 @@
 ;; all? : (Any->Boolean) List -> Boolean
 (bind/rec all?
   (lm (pred lst)
-    (iffy (~= lst mt)
+    (iffy (= (length lst) 0)
           (> 1 0)
           (∧ (pred (1st lst))
              (all? pred (rst lst))))))
@@ -27,7 +27,7 @@
 ;; any? : (Any->Boolean) List -> Boolean
 (bind/rec any?
   (lm (pred lst)
-    (iffy (~= lst mt)
+    (iffy (= (length lst) 0)
           (> 0 1)
           (∨ (pred (1st lst))
              (any? pred (rst lst))))))
@@ -41,9 +41,9 @@
 ;; has-dup? : List -> Boolean
 (bind/rec has-dup?
   (lm (lst)
-    (iffy (~= lst mt)
+    (iffy (= (length lst) 0)
           (> 0 1)
-          (iffy (~= (rst lst) mt)
+          (iffy (= (length (rst lst)) 0)
                 (> 0 1)
                 (∨ (has? (1st lst) (rst lst))
                    (has-dup? (rst lst)))))))
@@ -66,9 +66,9 @@
 ;; all-safe? : ListofQueen -> Boolean
 (bind/rec all-safe?
   (lm (qs)
-    (iffy (~= qs mt)
+    (iffy (= (length qs) 0)
           (> 1 0)
-          (iffy (~= (rst qs) mt)
+          (iffy (= (length (rst qs)) 0)
                 (> 1 0)
                 (∧ (safe-to-add? (1st qs) (rst qs))
                    (all-safe?    (rst qs)))))))
